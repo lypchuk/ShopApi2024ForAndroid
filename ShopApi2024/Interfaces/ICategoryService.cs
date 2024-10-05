@@ -13,6 +13,7 @@ namespace ShopApi2024.Interfaces
 
         Task <CategoryDto?> Get(int id);
         Task<IEnumerable<CategoryDto>> GetAll();
+        Task<IEnumerable<Category>> GetAllTeacher();
         Task<IEnumerable<Category>> GetAllWithProducts();
         
     }

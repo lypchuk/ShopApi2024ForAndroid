@@ -1,26 +1,32 @@
 ﻿using Microsoft.AspNetCore.Hosting.Server;
 using ShopApi2024.Interfaces;
 using System;
+using System.IO;
 
 namespace ShopApi2024.Services
 {
-    public class LocalStorageFileService : IFileService
+    public class LocalStorageFileService(IConfiguration configuration, IWebHostEnvironment environment) : IFileService
     {
         private const string imagesFolder = "images";
         private const string wwwroot = "wwwroot";
         //private const string imageFolder = "C:/ImagesAspNetShopApi2024";
-        private readonly IWebHostEnvironment environment;
+        //private readonly IWebHostEnvironment environment;
 
-        public LocalStorageFileService(IWebHostEnvironment environment)
+        //public LocalStorageFileService(IWebHostEnvironment environment)
+        //{
+        //    this.environment = environment;
+        //}
+
+
+        public void DeleteFileImage(string imagePath)
         {
-            this.environment = environment;
-        }
-
-
-        public void DeleteFileImage(string imageName)
-        {
-            string directory = Directory.GetCurrentDirectory();
-            string toimage = Path.Combine(directory, wwwroot, imagesFolder, imageName);
+            if (imagePath == "uploadingImages" + Path.DirectorySeparatorChar + "noimage.jpg")
+            {
+                return;
+            }
+            //string directory = Directory.GetCurrentDirectory();
+            //string toimage = Path.Combine(directory, wwwroot, imagesFolder, imageName);
+            var toimage = Path.Combine(Directory.GetCurrentDirectory(), imagePath);
 
 
             if (File.Exists(toimage))
@@ -29,8 +35,10 @@ namespace ShopApi2024.Services
             }
         }
 
-        public async Task<string> UploadFileImage(IFormFile file)
+        public string SaveFileImage(IFormFile file)
+        //public async Task<string> SaveFileImage(IFormFile file)
         {
+            /*
             // get image destination path
             string root = environment.WebRootPath;      // wwwroot
             string name = Guid.NewGuid().ToString();    // random name
@@ -50,62 +58,41 @@ namespace ShopApi2024.Services
             // return image file path
             //return Path.DirectorySeparatorChar + imagePath;//
             return fullName;
-        }
+            */
 
-        //private Task<string> SaveCategoryImages(string imageUrl, string extension = ".webp")
-        //{
-        //    string name = Guid.NewGuid().ToString();    // random name
-        //    string extensionFn = extension;// ".webp"; // get original extension
-        //    string fullName = name + extensionFn;
-
-
-        //    string path = Directory.GetCurrentDirectory() + "/wwwroot/";
-        //    string imageFolder = "images";
-
-
-        //    string imagePath = Path.Combine(imagesFolder, fullName);
-        //    string imageFullPath = Path.Combine(path, imagePath);
-
-        //    if (!System.IO.Directory.Exists(Path.Combine(path, imagesFolder)))
-        //    {
-        //        System.IO.Directory.CreateDirectory(Path.Combine(path, imageFolder));
-        //    }
-
-        //    using (System.Net.WebClient client = new System.Net.WebClient())
-        //    {
-        //        //client.DownloadFile(new Uri(imageUrl), imageFullPath);
-        //        client.DownloadFile(new Uri(imageUrl), imageFullPath);
-        //    }
-
-        //    //return Task.FromResult(path + fullName);
-        //    return Task.FromResult(Path.DirectorySeparatorChar + imagePath);
-        //}
-
-
-
-
-        /*
-        public async Task<string> SaveProductImages(IFormFile file)
-        {
-            // get image destination path
-            string root = environment.WebRootPath;      // wwwroot
-            string name = Guid.NewGuid().ToString();    // random name
-            string extension = Path.GetExtension(file.FileName); // get original extension
-            string fullName = name + extension;         // full name: name.ext
-
-            // create destination image file path
-            string imagePath = Path.Combine(imagesFolder, fullName);
-            string imageFullPath = Path.Combine(root, imagePath);
-
-            // save image on the folder
-            using (FileStream fs = new FileStream(imageFullPath, FileMode.Create))
+            if(file == null)
             {
-                await file.CopyToAsync(fs);
+                //return "uploadingImages" + Path.DirectorySeparatorChar + "noimage.jpg";
+                return Path.Combine("uploadingImages", "noimage.jpg");
             }
 
-            // return image file path
-            return Path.DirectorySeparatorChar + imagePath;
-        }
-        */
+            var dir = configuration["ImagesDir"];
+            var dirPath = Path.Combine(Directory.GetCurrentDirectory(), dir);
+
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+
+            string fullName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);    // random name
+
+
+            string fileSave = Path.Combine(dirPath, fullName);
+
+            using (var stream = new FileStream(fileSave, FileMode.Create))
+                file.CopyToAsync(stream);
+
+
+            //return fullName;//return image name
+
+
+            // Path.AltDirectorySeparatorChar=/
+            // Path.DirectorySeparatorChar=\
+            // Path.PathSeparator=;
+            // Path.VolumeSeparatorChar=:
+
+            return Path.Combine(dir,fullName) ;//return image name
+            //return "/" + dir + "/" + fullName;//return image name
+        }        
     }
 }

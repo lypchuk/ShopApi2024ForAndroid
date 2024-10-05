@@ -2,9 +2,9 @@
 {
     public interface IFileService
     {
-        //Task<string> SaveProductImages(IFormFile file);
-        Task<string> UploadFileImage(IFormFile file);
+        //Task<string> SaveFileImage(IFormFile file);
+        string SaveFileImage(IFormFile file);
         //string SaveCategoryImages(string imageUrl, string extension = ".webp");
-        void DeleteFileImage(string imageName);
+        void DeleteFileImage(string ImagePath);
     }
 }

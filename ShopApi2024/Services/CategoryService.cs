@@ -6,21 +6,34 @@ using ShopApi2024.Specifications;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace ShopApi2024.Services
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService/*(ShopApi2024Db _context)*/ : ICategoryService
     {
         private readonly IRepository<Category> categoryR;
         private readonly IMapper mapper;
         private readonly IFileService localStorageFileService;
+        private readonly ShopApi2024Db _context;
         public CategoryService(IMapper mapper, 
                                 IRepository<Category> categoryR, 
-                                IFileService localStorageFileService)
+                                IFileService localStorageFileService,
+                                ShopApi2024Db context)
         {
             this.mapper = mapper;
             this.categoryR = categoryR;
             this.localStorageFileService = localStorageFileService;
+            this._context = context;
+        }
+
+        public async Task<IEnumerable<Category>> GetAllTeacher()
+        {
+            
+            return await _context.Categories.ProjectTo<Category>(mapper.ConfigurationProvider).ToListAsync();//not wort in this project .... to work with dbcontext
+            //return Ok(model);
         }
 
 
@@ -55,13 +68,14 @@ namespace ShopApi2024.Services
             return dto;
         }
 
+
         public void Delete(int id)
         {
             if (id < 0) throw new HttpException(Errors.IdMustPositive, HttpStatusCode.BadRequest);
 
             // delete product by id
             var category = categoryR.GetById(id);
-            localStorageFileService.DeleteFileImage(category.ImageName);
+            localStorageFileService.DeleteFileImage(category.ImagePath!);
 
             if (category == null) throw new HttpException(Errors.CategoryNotFound, HttpStatusCode.NotFound);
 
@@ -76,7 +90,7 @@ namespace ShopApi2024.Services
             var category = categoryR.GetById(id);
 
             //delete image
-            localStorageFileService.DeleteFileImage(category.ImageName);
+            localStorageFileService.DeleteFileImage(category.ImagePath!);
 
             if (category == null) throw new HttpException(Errors.CategoryNotFound, HttpStatusCode.NotFound);
 
@@ -95,7 +109,7 @@ namespace ShopApi2024.Services
         }
 
 
-        public async void Edit(UpdateCategoryDto model)
+        public void Edit(UpdateCategoryDto model)
         {
             Category categoryUpdate = mapper.Map<Category>(model);
             
@@ -103,15 +117,19 @@ namespace ShopApi2024.Services
 
             if(model.ImageFile != null)
             {
-                localStorageFileService.DeleteFileImage(categoryOld.ImageName);
-                categoryUpdate.ImageName= await localStorageFileService.UploadFileImage(model.ImageFile);
+                localStorageFileService.DeleteFileImage(categoryOld.ImagePath!);
+                categoryUpdate.ImagePath= localStorageFileService.SaveFileImage(model.ImageFile);
+            }
+            else
+            {
+                categoryUpdate.ImagePath = categoryOld.ImagePath;
             }
             
 
             categoryUpdate.CreationTime = categoryOld.CreationTime;
             //categoryUpdate.DeleteTime = categoryOld.DeleteTime;
             //categoryUpdate.IsDelete = categoryOld.IsDelete;
-            
+
             
 
             categoryR.Update(categoryUpdate);

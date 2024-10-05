@@ -27,28 +27,28 @@ namespace ShopApi2024
             //this.environment = environment;
             //this.Database.EnsureDeleted();
             //this.Database.EnsureCreated();
-            //Database.Migrate();
+            //Database.Migrate();//????????????
         }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
 
-            string connectionStr = "Data Source=DESKTOP-ASTVPAV;" +
-                "Initial Catalog=ShopApi2024;" +
-                "Integrated Security=True;" +
-                "Connect Timeout=30;Encrypt=False;" +
-                "Trust Server Certificate=False;" +
-                "Application Intent=ReadWrite;" +
-                "Multi Subnet Failover=False";
+        //    string connectionStr = "Data Source=DESKTOP-ASTVPAV;" +
+        //        "Initial Catalog=ShopApi2024;" +
+        //        "Integrated Security=True;" +
+        //        "Connect Timeout=30;Encrypt=False;" +
+        //        "Trust Server Certificate=False;" +
+        //        "Application Intent=ReadWrite;" +
+        //        "Multi Subnet Failover=False";
 
-            optionsBuilder.UseSqlServer(connectionStr);
+        //    optionsBuilder.UseSqlServer(connectionStr);
 
-            optionsBuilder.EnableSensitiveDataLogging();
-        }
+        //    optionsBuilder.EnableSensitiveDataLogging();
+        //}
         //ShopApi2024
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,15 +62,16 @@ namespace ShopApi2024
             db.Movies.IgnoreQueryFilters().Count(); // 10
             */
 
-            int categoryCounter = 5;
-            int productInCategory = 5;
-
             //var fakerCategory = new Faker<Category>()
             //    .RuleFor(u => u.Name, (f, u) => f.Commerce.Categories(1).FirstOrDefault()!)
             //    //.RuleFor(u => u.ImageName, (f, u) => f.Name.FirstName())
             //    //.RuleFor(u => u.Description, (f, u) => f.Lorem.Text())
             //    .RuleFor(u => u.CreationTime, (f, u) => new DateTime())
             //    ;
+
+            /*
+            int categoryCounter = 5;
+            int productInCategory = 5;
 
             var faker = new Faker();
 
@@ -85,7 +86,7 @@ namespace ShopApi2024
                 categories[i].Id = i + 1;
                 categories[i].Description = faker.Lorem.Text();
                 //categories[i].ImageName = faker.Name.FirstName();
-                //categories[i].ImageUrl = Guid.NewGuid().ToString();
+                //categories[i].ImagePath = Guid.NewGuid().ToString();
                 categories[i].ImageName =  SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300");
                 categories[i].Name = CategoriesName[i];
                 categories[i].CreationTime = DateTime.Now;
@@ -106,15 +107,16 @@ namespace ShopApi2024
                     products[a].CreationTime = DateTime.Now;
                 }
             }
+            */
 
-            modelBuilder.Entity<Category>().Property("IsDelete").HasDefaultValue(false);
-            modelBuilder.Entity<Product>().Property("IsDelete").HasDefaultValue(false);
+            //modelBuilder.Entity<Category>().Property("IsDelete").HasDefaultValue(false);
+            //modelBuilder.Entity<Product>().Property("IsDelete").HasDefaultValue(false);
 
             modelBuilder.Entity<Category>().HasQueryFilter(x=> x.IsDelete == false);
             modelBuilder.Entity<Product>().HasQueryFilter(x=> x.IsDelete == false);
 
-            modelBuilder.Entity<Category>().HasData(categories);
-            modelBuilder.Entity<Product>().HasData(products);
+            //modelBuilder.Entity<Category>().HasData(categories);
+            //modelBuilder.Entity<Product>().HasData(products);
 
             //var f = new Faker();
 
@@ -122,40 +124,6 @@ namespace ShopApi2024
             //cat.Name = f.Commerce.Categories(1).FirstOrDefault()!;
 
 
-        }
-
-        
-
-        //private Task<string> SaveImageFromUrl(string imageUrl, string extension = ".webp")
-        private string SaveImageFromUrl(string imageUrl, string extension = ".webp")
-        {
-            string name = Guid.NewGuid().ToString();    // random name
-            string extensionFn = extension;// ".webp"; // get original extension
-            string fullName = name + extensionFn;
-
-            
-            string path = Directory.GetCurrentDirectory() + "/wwwroot/";
-            string imageFolder = "images";
-
-
-            string imagePath = Path.Combine(imageFolder, fullName);
-            string imageFullPath = Path.Combine(path, imagePath);
-
-            if (!System.IO.Directory.Exists(Path.Combine(path, imageFolder)))
-            {
-                System.IO.Directory.CreateDirectory(Path.Combine(path, imageFolder));
-            }
-
-            using (System.Net.WebClient client = new System.Net.WebClient())
-            {
-                //client.DownloadFile(new Uri(imageUrl), imageFullPath);
-                client.DownloadFileAsync(new Uri(imageUrl), imageFullPath);
-            }
-
-            //return Task.FromResult(path + fullName);//return path local
-            //return Task.FromResult(Path.DirectorySeparatorChar + imagePath);//return url
-            //return Task.FromResult(fullName);//return image name
-            return fullName;//return image name
         }
     }
 }

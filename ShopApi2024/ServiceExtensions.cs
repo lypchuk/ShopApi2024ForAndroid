@@ -25,17 +25,25 @@ namespace ShopApi2024
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IFileService, LocalStorageFileService>();
 
+
         }
 
         public static void AddAutoMapper(this IServiceCollection services)
         {
-            //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
             services.AddSingleton(provider => new MapperConfiguration(cfg =>
             //services.AddScoped(provider => new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new ApplicationProfile(provider.CreateScope().ServiceProvider.GetService<IFileService>()!));
             }).CreateMapper());
         }
+
+        //public static void AddAutoMapper(this IServiceCollection services)
+        //{
+        //    services.AddSingleton(provider => new MapperConfiguration(cfg =>
+        //    //services.AddScoped(provider => new MapperConfiguration(cfg =>
+        //    {
+        //        cfg.AddProfile(new ApplicationProfile(provider.CreateScope().ServiceProvider.GetService<IFileService>()!));
+        //    }).CreateMapper());
+        //}
     }
 }
