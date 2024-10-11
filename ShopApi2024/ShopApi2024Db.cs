@@ -10,6 +10,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Reflection;
 
+    //< PackageReference Include = "Ardalis.Specification" Version = "8.0.0" />
+    //< PackageReference Include = "Ardalis.Specification.EntityFrameworkCore" Version = "8.0.0" />
+    //< PackageReference Include = "AutoMapper" Version = "13.0.1" />
+    //< PackageReference Include = "AutoMapper.Extensions.Microsoft.DependencyInjection" Version = "12.0.1" />
+    //< PackageReference Include = "Bogus" Version = "35.6.1" />
+    //< PackageReference Include = "Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version = "8.0.8" />
+    //< PackageReference Include = "Microsoft.EntityFrameworkCore" Version = "8.0.8" />
+    //< PackageReference Include = "Microsoft.EntityFrameworkCore.SqlServer" Version = "8.0.8" />
+    //< PackageReference Include = "Microsoft.EntityFrameworkCore.Tools" Version = "8.0.8" >
+
 namespace ShopApi2024
 {
     public class ShopApi2024Db : DbContext 

@@ -11,7 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-string connStr = builder.Configuration.GetConnectionString("LocalDb")!;
+//string connStr = builder.Configuration.GetConnectionString("LocalDb")!;
+string connStr = builder.Configuration.GetConnectionString("DefaultConnection")!;//sqllite
 //builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 builder.Services.AddControllersWithViews().AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -38,16 +39,11 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors(options =>
 {
-    options.WithOrigins("http://localhost:4200",
-        "http://localhost:3002",
-        "http://localhost:5041",
-        "http://localhost:3001",
-        "http://localhost:3000",
-        "https://jolly-pebble-03ffb7210.5.azurestaticapps.net/",
-        "https://jolly-pebble-03ffb7210.5.azurestaticapps.net",
-        "http://localhost:55756")
+    options.WithOrigins("http://localhost:5041",
+        "http://127.0.0.1:5041")
         .AllowAnyMethod()
-        .AllowAnyHeader();
+        .AllowAnyHeader()
+        .AllowAnyOrigin();
 });
 
 app.UseAuthorization();
