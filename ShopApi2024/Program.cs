@@ -32,11 +32,14 @@ builder.Services.AddAutoMapper();
 //builder.Services.AddDbContext<ShopApi2024Db>(opt => opt.UseSqlServer(connStr));
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
+
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
+
+
 app.UseCors(options =>
 {
     options.WithOrigins("http://localhost:5041",
@@ -113,6 +116,7 @@ using (var scope = app.Services.CreateScope())
                 Name = name,
                 Description = faker.Lorem.Text(),
                 ImagePath = Path.Combine(dir , SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")),
+                //ImagePath = dir + "/" + SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"),
                 CreationTime = DateTime.Now,
             };
 
@@ -132,6 +136,7 @@ using (var scope = app.Services.CreateScope())
                 Description = faker.Commerce.ProductDescription(),
                 //ImageName = Guid.NewGuid().ToString(),
                 ImagePath = Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")),
+                //ImagePath = dir + "/" + SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"),
                 //ImagePath = "no",
                 CreationTime = DateTime.Now,
                 Discount = faker.Random.Number(0, 50),

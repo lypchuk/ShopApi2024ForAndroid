@@ -80,8 +80,13 @@ namespace ShopApi2024.Services
             string fileSave = Path.Combine(dirPath, fullName);
 
             using (var stream = new FileStream(fileSave, FileMode.Create))
-                file.CopyToAsync(stream);
+            {
+                file.CopyTo(stream);
+                //await file.CopyToAsync(stream);
+               
+            }
 
+            return Path.Combine(dir, fullName);
 
             //return fullName;//return image name
 
@@ -91,7 +96,7 @@ namespace ShopApi2024.Services
             // Path.PathSeparator=;
             // Path.VolumeSeparatorChar=:
 
-            return Path.Combine(dir,fullName) ;//return image name
+            //return image name
             //return "/" + dir + "/" + fullName;//return image name
         }        
     }
