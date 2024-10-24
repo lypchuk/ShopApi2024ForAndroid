@@ -14,7 +14,7 @@ namespace ShopApi2024.Entities
         public string Name { get; set; }
 
         [StringLength(255)]
-        public string? ImagePath { get; set; }
+        public string[]? ImagePath { get; set; }
 
 
         [Required, StringLength(255)]

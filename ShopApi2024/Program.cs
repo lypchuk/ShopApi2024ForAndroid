@@ -5,6 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using ShopApi2024;
 using ShopApi2024.Entities;
 using ShopApi2024.Profiles;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -135,13 +136,24 @@ using (var scope = app.Services.CreateScope())
                 CategoryId = j,
                 Description = faker.Commerce.ProductDescription(),
                 //ImageName = Guid.NewGuid().ToString(),
-                ImagePath = Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")),
+                 
+                //ImagePath = [.. (Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")))],
                 //ImagePath = dir + "/" + SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"),
                 //ImagePath = "no",
                 CreationTime = DateTime.Now,
                 Discount = faker.Random.Number(0, 50),
                 Price = Decimal.Parse(faker.Commerce.Price(min: 5, max: 1000))
             };
+
+            string[] pathProdImag = { Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")) };
+
+            Array.Resize(ref pathProdImag, pathProdImag.Length + 1);
+
+            pathProdImag[pathProdImag.Length-1] = (Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")));
+
+            pathProdImag = [.. pathProdImag, Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"))];
+
+            entity.ImagePath = pathProdImag;
 
             //entity.ImagePath = Path.Combine(dir, entity.ImageName);
             //entity.ImagePath ="/" + dir + "/" + entity.ImageName;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ShopApi2024.Migrations
 {
     /// <inheritdoc />
-    public partial class sqllite : Migration
+    public partial class sql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -11,8 +11,8 @@ using ShopApi2024;
 namespace ShopApi2024.Migrations
 {
     [DbContext(typeof(ShopApi2024Db))]
-    [Migration("20241011115055_sqllite")]
-    partial class sqllite
+    [Migration("20241024122115_sql")]
+    partial class sql
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
