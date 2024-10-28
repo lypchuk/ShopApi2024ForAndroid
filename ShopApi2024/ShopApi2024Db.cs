@@ -42,6 +42,7 @@ namespace ShopApi2024
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -216,10 +217,10 @@ public class ProductSeeder implements CommandLineRunner {
                         // Generate random integer between min (inclusive) and max (inclusive)
                         int randomMax = (int)(Math.random() * ((max - min) + 1)) + min;
 
-                        List<ProductImageEntity> images = new ArrayList<>();
+                        List<ProductImage> images = new ArrayList<>();
                         for (int k = 0; k < randomMax; k++) {
                             // Використовуємо наступне зображення для продукту
-                            images.add(new ProductImageEntity(
+                            images.add(new ProductImage(
                                     null,
                                     imagesUrls.get(imageIndex++),
                                     k,

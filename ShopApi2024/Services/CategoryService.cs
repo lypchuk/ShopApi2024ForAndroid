@@ -95,7 +95,8 @@ namespace ShopApi2024.Services
             if (category == null) throw new HttpException(Errors.CategoryNotFound, HttpStatusCode.NotFound);
 
             category.IsDelete = true;
-            category.DeleteTime = DateTime.Now;
+            category.DeleteTime = DateTime.UtcNow;
+            //category.DeleteTime = DateTime.Now;
             categoryR.Update(category);
             categoryR.Save();
         }

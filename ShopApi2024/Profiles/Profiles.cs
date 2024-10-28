@@ -35,6 +35,7 @@ namespace ShopApi2024.Profiles
 
 
             CreateMap<Product, ProductDto>();
+            CreateMap<ProductImage, ProductImageDto>();
 
 
             /*

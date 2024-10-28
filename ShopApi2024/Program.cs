@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using ShopApi2024;
 using ShopApi2024.Entities;
+using ShopApi2024.Interfaces;
 using ShopApi2024.Profiles;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -12,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-//string connStr = builder.Configuration.GetConnectionString("LocalDb")!;
+//string connStr = builder.Configuration.GetConnectionString("DefaultConnection")!;
 string connStr = builder.Configuration.GetConnectionString("DefaultConnection")!;//sqllite
 //builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
@@ -28,7 +29,7 @@ builder.Services.AddAutoMapper();
 //builder.Services.AddAutoMapper(typeof(ApplicationProfile));
 
 
-
+//builder.Services.AddScoped<IImageWorker, ImageWorker>();
 
 //builder.Services.AddDbContext<ShopApi2024Db>(opt => opt.UseSqlServer(connStr));
 
@@ -106,6 +107,7 @@ using (var scope = app.Services.CreateScope())
     {
         const int number = 10;
         int productInCategory = 5;
+        int productImages = 3;
         var categoriesName = new Faker("uk").Commerce.Categories(number);
 
         var faker = new Faker();
@@ -118,7 +120,8 @@ using (var scope = app.Services.CreateScope())
                 Description = faker.Lorem.Text(),
                 ImagePath = Path.Combine(dir , SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")),
                 //ImagePath = dir + "/" + SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"),
-                CreationTime = DateTime.Now,
+                CreationTime = DateTime.UtcNow,
+                //CreationTime = DateTime.Now,
             };
 
             //entity.ImagePath = Path.Combine(dir, entity.ImageName);
@@ -127,6 +130,8 @@ using (var scope = app.Services.CreateScope())
             dbContext.Categories.Add(entity);
             dbContext.SaveChanges();
         }
+
+
 
         for (int i = 0, j = 1; i < categoriesName.Length * productInCategory; i++)
         {
@@ -140,7 +145,8 @@ using (var scope = app.Services.CreateScope())
                 //ImagePath = [.. (Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")))],
                 //ImagePath = dir + "/" + SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"),
                 //ImagePath = "no",
-                CreationTime = DateTime.Now,
+                CreationTime = DateTime.UtcNow,
+                //CreationTime = DateTime.Now,
                 Discount = faker.Random.Number(0, 50),
                 Price = Decimal.Parse(faker.Commerce.Price(min: 5, max: 1000))
             };
@@ -149,7 +155,7 @@ using (var scope = app.Services.CreateScope())
 
             Array.Resize(ref pathProdImag, pathProdImag.Length + 1);
 
-            pathProdImag[pathProdImag.Length-1] = (Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")));
+            pathProdImag[pathProdImag.Length-1] = Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"));
 
             pathProdImag = [.. pathProdImag, Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"))];
 
@@ -164,6 +170,23 @@ using (var scope = app.Services.CreateScope())
             }
             dbContext.Products.Add(entity);
             dbContext.SaveChanges();
+        }
+
+
+        for (int i = 0; i < categoriesName.Length * productInCategory; i++)
+        {
+            for (int j = 0; j < productImages; j++)
+            {
+                var entity = new ProductImage
+                {
+                    Image = SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"),
+                    Priority = j + 1,
+                    ProductId = i + 1,
+                };
+
+                dbContext.ProductImages.Add(entity);
+                dbContext.SaveChanges();
+            }
         }
     }
 

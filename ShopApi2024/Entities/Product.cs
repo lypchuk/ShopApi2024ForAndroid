@@ -36,7 +36,8 @@ namespace ShopApi2024.Entities
 
         public virtual Category? Category { get; set; }
 
-        
 
+
+        public virtual ICollection<ProductImage>? Images { get; set; }
     }
 }

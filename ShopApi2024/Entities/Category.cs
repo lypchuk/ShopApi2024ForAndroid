@@ -16,11 +16,14 @@ namespace ShopApi2024.Entities
         public string? ImagePath { get; set; }
 
 
-        [Required, StringLength(255)]
+        //[Required, StringLength(511)]
+        [Required]
         public string Description { get; set; }
         public bool IsDelete { get; set; } = false;
         public DateTime CreationTime { get; set; }
         public DateTime? DeleteTime { get; set; }
+
+
         public virtual ICollection<Product>? Products { get; set; }
 
     }

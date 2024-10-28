@@ -45,5 +45,6 @@ namespace ShopApi2024.Controllers
             //.ProjectTo<ProductDto>(mapper.ConfigurationProvider);
             return Ok(dto);
         }
+
     }
 }

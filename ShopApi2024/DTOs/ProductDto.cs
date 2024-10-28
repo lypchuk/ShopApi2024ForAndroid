@@ -15,5 +15,8 @@ namespace ShopApi2024.DTOs
         public double Discount { get; set; }
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
+        //public int[]? ProductImageId { get; set; }
+        public ICollection<ProductImageDto>? Images { get; set; }
     }
+
 }

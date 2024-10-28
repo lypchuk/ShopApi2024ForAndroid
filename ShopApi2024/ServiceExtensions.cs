@@ -12,7 +12,8 @@ namespace ShopApi2024
         public static void AddDbContext(this IServiceCollection services, string connectionString)
         {
             //services.AddDbContext<ShopApi2024Db>(opts => opts.UseSqlServer(connectionString));
-            services.AddDbContext<ShopApi2024Db>(opts => opts.UseSqlite(connectionString));
+            //services.AddDbContext<ShopApi2024Db>(opts => opts.UseSqlite(connectionString));
+            services.AddDbContext<ShopApi2024Db>(opts => opts.UseNpgsql(connectionString));
         }
 
         public static void AddRepositories(this IServiceCollection services)
@@ -25,6 +26,7 @@ namespace ShopApi2024
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IFileService, LocalStorageFileService>();
+            services.AddScoped<IImageWorker, ImageWorker>();
 
 
         }
