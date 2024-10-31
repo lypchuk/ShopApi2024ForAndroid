@@ -35,6 +35,9 @@ namespace ShopApi2024.Profiles
 
 
             CreateMap<Product, ProductDto>();
+            CreateMap<CreateProductDto, Product>().ForMember(x=> x.CreationTime, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+
             CreateMap<ProductImage, ProductImageDto>();
 
 

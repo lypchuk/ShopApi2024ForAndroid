@@ -16,10 +16,8 @@ namespace ShopApi2024.Entities
         [StringLength(255)]
         public string[]? ImagePath { get; set; }
 
-
         [Required, StringLength(255)]
         public string Description { get; set; }
-
 
         public DateTime CreationTime { get; set; }
 
@@ -29,14 +27,12 @@ namespace ShopApi2024.Entities
 
         public decimal Price { get; set; }
 
-        public double Discount { get; set; }
+        public double? Discount { get; set; }
 
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
 
         public virtual Category? Category { get; set; }
-
-
 
         public virtual ICollection<ProductImage>? Images { get; set; }
     }

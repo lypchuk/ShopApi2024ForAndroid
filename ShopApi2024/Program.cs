@@ -56,16 +56,31 @@ app.UseAuthorization();
 app.MapControllers();
 
 var dir = builder.Configuration["ImagesDir"];
+var productImages = builder.Configuration["ProductImages"];
+
 var dirPath = Path.Combine(Directory.GetCurrentDirectory(), dir);
+var dirPathProductImages = Path.Combine(Directory.GetCurrentDirectory(), productImages);
+
 if (!Directory.Exists(dirPath))
 {
     Directory.CreateDirectory(dirPath);
+}
+
+if (!Directory.Exists(dirPathProductImages))
+{
+    Directory.CreateDirectory(dirPathProductImages);
 }
 
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(dirPath),
     RequestPath = "/uploadingImages"
+});
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(dirPathProductImages),
+    RequestPath = "/productImages"
 });
 
 var imageNo = Path.Combine(dirPath, "noimage.jpg");
@@ -107,7 +122,7 @@ using (var scope = app.Services.CreateScope())
     {
         const int number = 10;
         int productInCategory = 5;
-        int productImages = 3;
+        int productImagesCount = 3;
         var categoriesName = new Faker("uk").Commerce.Categories(number);
 
         var faker = new Faker();
@@ -175,7 +190,7 @@ using (var scope = app.Services.CreateScope())
 
         for (int i = 0; i < categoriesName.Length * productInCategory; i++)
         {
-            for (int j = 0; j < productImages; j++)
+            for (int j = 0; j < productImagesCount; j++)
             {
                 var entity = new ProductImage
                 {

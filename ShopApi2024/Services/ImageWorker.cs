@@ -12,11 +12,12 @@ namespace ShopApi2024.Services
         {
             _configuration = configuration;
         }
+
         public bool Delete(string fileName)
         {
             try
             {
-                var dir = _configuration["ImageFolder"];
+                var dir = _configuration["ProductImages"];
                 var sizes = _configuration["ImageSizes"].Split(",")
                     .Select(x => int.Parse(x));
                 //int[] sizes = [50, 150, 300, 600, 1200];
@@ -53,7 +54,7 @@ namespace ShopApi2024.Services
         private string SaveByteArray(byte[] bytes)
         {
             string imageName = Guid.NewGuid().ToString() + ".webp";
-            var dir = _configuration["ImageFolder"];
+            var dir = _configuration["ProductImages"];
 
             var sizes = _configuration["ImageSizes"].Split(",")
                     .Select(x => int.Parse(x));
