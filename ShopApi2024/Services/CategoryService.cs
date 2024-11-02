@@ -12,16 +12,16 @@ using Microsoft.AspNetCore.Http;
 
 namespace ShopApi2024.Services
 {
-    public class CategoryService/*(ShopApi2024Db _context)*/ : ICategoryService
+    public class CategoryService/*(ShopApi2024DbContext _context)*/ : ICategoryService
     {
         private readonly IRepository<Category> categoryR;
         private readonly IMapper mapper;
         private readonly IFileService localStorageFileService;
-        private readonly ShopApi2024Db _context;
+        private readonly ShopApi2024DbContext _context;
         public CategoryService(IMapper mapper, 
                                 IRepository<Category> categoryR, 
                                 IFileService localStorageFileService,
-                                ShopApi2024Db context)
+                                ShopApi2024DbContext context)
         {
             this.mapper = mapper;
             this.categoryR = categoryR;

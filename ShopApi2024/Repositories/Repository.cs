@@ -7,10 +7,10 @@ namespace ShopApi2024.Repositories
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class 
     {
-        internal ShopApi2024Db context;
+        internal ShopApi2024DbContext context;
         internal DbSet<TEntity> dbSet;
 
-        public Repository(ShopApi2024Db context)
+        public Repository(ShopApi2024DbContext context)
         {
             this.context = context;
             this.dbSet = context.Set<TEntity>();

@@ -12,7 +12,7 @@ namespace ShopApi2024.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController (ShopApi2024Db context, IProductService productService,IImageWorker imageWorker, IMapper mapper) : ControllerBase
+    public class ProductController (ShopApi2024DbContext context, IProductService productService,IImageWorker imageWorker, IMapper mapper) : ControllerBase
     {
         [HttpGet("all")]
         public async Task<IActionResult> Get()

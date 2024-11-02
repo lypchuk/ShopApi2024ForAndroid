@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShopApi2024;
@@ -11,9 +12,11 @@ using ShopApi2024;
 namespace ShopApi2024.Migrations
 {
     [DbContext(typeof(ShopApi2024DbContext))]
-    partial class ShopApi2024DbModelSnapshot : ModelSnapshot
+    [Migration("20241102115344_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

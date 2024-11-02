@@ -1,9 +1,12 @@
 using Bogus;
 using Bogus.DataSets;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using ShopApi2024;
+using ShopApi2024.Data;
 using ShopApi2024.Entities;
+using ShopApi2024.Entities.Identity;
 using ShopApi2024.Interfaces;
 using ShopApi2024.Profiles;
 using System.Linq;
@@ -18,6 +21,19 @@ string connStr = builder.Configuration.GetConnectionString("DefaultConnection")!
 //builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 builder.Services.AddControllersWithViews().AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+builder.Services.AddIdentity<UserEntity, RoleEntity>(options =>
+{
+    options.Stores.MaxLengthForKeys = 128;
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 5;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+})
+    .AddEntityFrameworkStores<ShopApi2024DbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
@@ -31,7 +47,7 @@ builder.Services.AddAutoMapper();
 
 //builder.Services.AddScoped<IImageWorker, ImageWorker>();
 
-//builder.Services.AddDbContext<ShopApi2024Db>(opt => opt.UseSqlServer(connStr));
+//builder.Services.AddDbContext<ShopApi2024DbContext>(opt => opt.UseSqlServer(connStr));
 
 var app = builder.Build();
 
@@ -84,6 +100,8 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 var imageNo = Path.Combine(dirPath, "noimage.jpg");
+
+
 if (!File.Exists(imageNo))
 {
     string url = "https://m.media-amazon.com/images/I/71QaVHD-ZDL.jpg";
@@ -113,129 +131,12 @@ if (!File.Exists(imageNo))
 }
 
 //Dependecy Injection
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ShopApi2024Db>();
-    dbContext.Database.Migrate(); //Запусти міграції на БД, якщо їх там немає
-
-    if (!dbContext.Categories.Any())
-    {
-        const int number = 10;
-        int productInCategory = 5;
-        int productImagesCount = 3;
-        var categoriesName = new Faker("uk").Commerce.Categories(number);
-
-        var faker = new Faker();
-
-        foreach (var name in categoriesName)
-        {
-            var entity = new Category
-            {
-                Name = name,
-                Description = faker.Lorem.Text(),
-                ImagePath = Path.Combine(dir , SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")),
-                //ImagePath = dir + "/" + SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"),
-                CreationTime = DateTime.UtcNow,
-                //CreationTime = DateTime.Now,
-            };
-
-            //entity.ImagePath = Path.Combine(dir, entity.ImageName);
-            //entity.ImagePath = "/" + dir + "/" + entity.ImageName;
-
-            dbContext.Categories.Add(entity);
-            dbContext.SaveChanges();
-        }
+app.SeedData();
+//using (var scope = app.Services.CreateScope())
+//{
+//}
 
 
 
-        for (int i = 0, j = 1; i < categoriesName.Length * productInCategory; i++)
-        {
-            var entity = new Product
-            {
-                Name = faker.Commerce.ProductName(),
-                CategoryId = j,
-                Description = faker.Commerce.ProductDescription(),
-                //ImageName = Guid.NewGuid().ToString(),
-                 
-                //ImagePath = [.. (Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")))],
-                //ImagePath = dir + "/" + SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"),
-                //ImagePath = "no",
-                CreationTime = DateTime.UtcNow,
-                //CreationTime = DateTime.Now,
-                Discount = faker.Random.Number(0, 50),
-                Price = Decimal.Parse(faker.Commerce.Price(min: 5, max: 1000))
-            };
-
-            string[] pathProdImag = { Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300")) };
-
-            Array.Resize(ref pathProdImag, pathProdImag.Length + 1);
-
-            pathProdImag[pathProdImag.Length-1] = Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"));
-
-            pathProdImag = [.. pathProdImag, Path.Combine(dir, SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"))];
-
-            entity.ImagePath = pathProdImag;
-
-            //entity.ImagePath = Path.Combine(dir, entity.ImageName);
-            //entity.ImagePath ="/" + dir + "/" + entity.ImageName;
-
-            if (i % productInCategory == 0 && i>0)
-            {
-                j++;
-            }
-            dbContext.Products.Add(entity);
-            dbContext.SaveChanges();
-        }
-
-
-        for (int i = 0; i < categoriesName.Length * productInCategory; i++)
-        {
-            for (int j = 0; j < productImagesCount; j++)
-            {
-                var entity = new ProductImage
-                {
-                    Image = SaveImageFromUrl(imageUrl: "https://picsum.photos/300/300"),
-                    Priority = j + 1,
-                    ProductId = i + 1,
-                };
-
-                dbContext.ProductImages.Add(entity);
-                dbContext.SaveChanges();
-            }
-        }
-    }
-
-   
-
-}
-
-
-string SaveImageFromUrl(string imageUrl, string extension = ".webp")
-{
-    var dir = builder.Configuration["ImagesDir"];
-    var dirPath = Path.Combine(Directory.GetCurrentDirectory(), dir);
-
-    //if (!Directory.Exists(dirPath))
-    //{
-    //    Directory.CreateDirectory(dirPath);
-    //}
-
-    string name = Guid.NewGuid().ToString();    // random name
-    string extensionFn = extension;// ".webp"; // get original extension
-    string fullName = name + extensionFn;
-
-
-    //string path = Directory.GetCurrentDirectory() + "/wwwroot/";
-
-    string imageFullPath = Path.Combine(dirPath, fullName);
-
-    using (System.Net.WebClient client = new System.Net.WebClient())
-    {
-        //client.DownloadFile(new Uri(imageUrl), imageFullPath);
-        client.DownloadFileAsync(new Uri(imageUrl), imageFullPath);
-    }
-
-    return fullName;//return image name
-}
 
 app.Run();

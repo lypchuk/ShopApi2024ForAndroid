@@ -11,9 +11,9 @@ namespace ShopApi2024
     {
         public static void AddDbContext(this IServiceCollection services, string connectionString)
         {
-            //services.AddDbContext<ShopApi2024Db>(opts => opts.UseSqlServer(connectionString));
-            services.AddDbContext<ShopApi2024Db>(opts => opts.UseSqlite(connectionString));
-            //services.AddDbContext<ShopApi2024Db>(opts => opts.UseNpgsql(connectionString));
+            //services.AddDbContext<ShopApi2024DbContext>(opts => opts.UseSqlServer(connectionString));
+            //services.AddDbContext<ShopApi2024DbContext>(opts => opts.UseSqlite(connectionString));
+            services.AddDbContext<ShopApi2024DbContext>(opts => opts.UseNpgsql(connectionString));
         }
 
         public static void AddRepositories(this IServiceCollection services)

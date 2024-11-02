@@ -12,7 +12,7 @@ namespace ShopApi2024.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
-    public class CategoryController(ICategoryService categoryService/*,ShopApi2024Db _context, IMapper mapper*//*, IConfiguration configuration*/) : ControllerBase
+    public class CategoryController(ICategoryService categoryService/*,ShopApi2024DbContext _context, IMapper mapper*//*, IConfiguration configuration*/) : ControllerBase
     {
         //private readonly ICategoryService categoryService;
         //public CategoryController(ICategoryService categoryService)
