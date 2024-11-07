@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopApi2024.Entities.Identity
 {
+    //user entity
     public class UserEntity : IdentityUser<int>
     {
         [StringLength(255)]

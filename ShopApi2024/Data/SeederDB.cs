@@ -11,9 +11,14 @@ namespace ShopApi2024.Data
 {
     public static class SeederDB
     {
-        private static readonly IConfiguration? configuration;
+        private static IConfiguration configuration;
         public static async void  SeedData(this IApplicationBuilder app)
         {
+            var serviceProvider = app.ApplicationServices;
+            configuration = serviceProvider.GetService<IConfiguration>()!;
+
+            
+
             using (var scope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
@@ -23,14 +28,16 @@ namespace ShopApi2024.Data
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<RoleEntity>>();
 
                 dbContext.Database.Migrate(); //Запусти міграції на БД, якщо їх там немає
+                
 
                 var dir = configuration["ImagesDir"];//////////////////////////////////////////////////??????
+                const int number = 10;
+                int productInCategory = 5;
+                int productImagesCount = 3;
+                
 
                 if (!dbContext.Categories.Any())
                 {
-                    const int number = 10;
-                    int productInCategory = 5;
-                    int productImagesCount = 3;
                     var categoriesName = new Faker("uk").Commerce.Categories(number);
 
                     var faker = new Faker();
@@ -133,6 +140,7 @@ namespace ShopApi2024.Data
                     }
                 }
 
+                //add all roles
                 if (!dbContext.Roles.Any())
                 {
                     foreach (var role in Roles.GetAll)
@@ -145,9 +153,12 @@ namespace ShopApi2024.Data
                     }
                 }
 
+                //create initial admin user
                 if (!dbContext.Users.Any())
                 {
+                    //save iamage
                     string image = imageWorker.Save("https://picsum.photos/1200/800?person").Result;
+                    //create user
                     var user = new UserEntity
                     {
                         Email = "admin@gmail.com",
@@ -156,6 +167,7 @@ namespace ShopApi2024.Data
                         FirstName = "Іван",
                         Image = image
                     };
+                    //save user with usermanager and save password
                     var result = userManager.CreateAsync(user, "123456").Result;
                     if (!result.Succeeded)
                     {
@@ -163,9 +175,11 @@ namespace ShopApi2024.Data
                     }
                     else
                     {
-                        result = userManager.AddToRoleAsync(user, Roles.Admin).Result;
+                        //add user role
+                        result = userManager.AddToRoleAsync(user, Roles.ADMIN).Result;
                     }
                 }
+                
             }
         }
     

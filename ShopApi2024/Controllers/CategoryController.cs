@@ -3,9 +3,12 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ShopApi2024.Constants;
 using ShopApi2024.DTOs;
 using ShopApi2024.Entities;
 using ShopApi2024.Interfaces;
+using ShopApi2024.Repositories;
+using System.Net;
 
 namespace ShopApi2024.Controllers
 {
@@ -77,5 +80,39 @@ namespace ShopApi2024.Controllers
             return Ok();
         }
 
+
+
+        /*
+        [AllowAnonymous]
+        [Authorize(Roles = Roles.ADMIN)]
+        [Authorize]
+        public async Task<CategoryDto> CreateUpdateAsync(CategoryCreationModel model)
+        {
+            Category category;
+            string? image = model.ImageFile is not null ? await imageService.SaveImageAsync(model.ImageFile) : null;
+            if (model.Id == 0)
+            {
+                category = mapper.Map<Category>(model);
+                category.Image = image;
+                await repository.AddAsync(category);
+            }
+            else
+            {
+                category = await repository.GetByIDAsync(model.Id)
+                    ?? throw new HttpException("Invalid category id", HttpStatusCode.BadRequest);
+                category.Name = model.Name;
+                category.Description = model.Description;
+                if (image is not null)
+                {
+                    if (category.Image is not null)
+                        imageService.DeleteImage(category.Image);
+                    category.Image = image;
+                }
+            }
+
+            await repository.SaveAsync();
+            return mapper.Map<CategoryDto>(category);
+        }
+        */
     }
 }

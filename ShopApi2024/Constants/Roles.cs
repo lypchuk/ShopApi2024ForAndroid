@@ -1,10 +1,11 @@
 ﻿namespace ShopApi2024.Constants
 {
+    //roles identity
     public static class Roles
     {
-        public const string Admin = "admin";
-        public const string User = "user";
+        public const string ADMIN = "admin";
+        public const string USER = "user";
 
-        public static readonly string[] GetAll = [User, Admin];
+        public static readonly string[] GetAll = [USER, ADMIN];
     }
 }

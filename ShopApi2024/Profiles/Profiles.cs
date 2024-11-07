@@ -3,7 +3,9 @@ using AutoMapper;
 using Bogus;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ShopApi2024.DTOs;
+using ShopApi2024.DTOs.Account;
 using ShopApi2024.Entities;
+using ShopApi2024.Entities.Identity;
 using ShopApi2024.Interfaces;
 
 namespace ShopApi2024.Profiles
@@ -39,6 +41,8 @@ namespace ShopApi2024.Profiles
 
 
             CreateMap<ProductImage, ProductImageDto>();
+
+            CreateMap<AccountRegistrationDTO, UserEntity>();
 
 
             /*
