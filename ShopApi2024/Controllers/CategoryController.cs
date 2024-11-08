@@ -114,5 +114,19 @@ namespace ShopApi2024.Controllers
             return mapper.Map<CategoryDto>(category);
         }
         */
+
+        [HttpGet("allFromServer")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = Policies.ADULT)]
+        public async Task<IActionResult> Get2()
+        {
+            HttpClient client = new HttpClient();
+            var result = await client.GetAsync("https://api.lypchuk.click/api/category/all");
+            //var result = await client.GetAsync<List<CategoryDto>>("https://api.lypchuk.click/api/category/all");//not work
+            //return Ok(await client.GetStringAsync("https://api.lypchuk.click/api/category/all"));
+            
+            //return Ok(await result.Content.ReadFromJsonAsync<List<CategoryDto>>());//return data in good format
+            return Ok(result.Content.ReadAsStream()); //return data in some array
+            //return Ok(result.Content.ReadAsStringAsync()); //return data in string
+        }
     }
 }
